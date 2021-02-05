@@ -3,31 +3,42 @@ import React, {useEffect, useState} from 'react';
 import {ActivityIndicator, Button, View, SafeAreaView} from 'react-native';
 
 import EStyleSheet from 'react-native-extended-stylesheet';
-import {changeTheme, initBuild} from './src/themes';
+import {changeTheme, initThemes} from './src/themes';
 
 import styles from './styles';
 
+//Init default theme
+initThemes();
+
 export default function App() {
-  const [isLoad, setIsLoad] = useState(true);
+  const [loading, setLoading] = useState(true);
 
-  //Функція для вибору іншої теми
-  const onChangeTheme = () => {
-    setIsLoad(false);
-    const currentTheme = EStyleSheet.value('$theme');
-    const nextTheme = currentTheme === 'light' ? 'dark' : 'light';
-    changeTheme(nextTheme);
-  };
-
+  //Stop loading from init
   useEffect(() => {
-    initBuild();
-
     EStyleSheet.subscribe('build', () => {
-      setIsLoad(false);
+      setLoading(false);
     });
   }, []);
 
-  return !isLoad ? (
-    <SafeAreaView style={styles.containerStyle}>
+  const onRefreshApp = () => {
+    setLoading(true);
+    setTimeout(() => {
+      setLoading(false);
+    }, 500);
+  };
+
+  //onChangeTheme
+  const onChangeTheme = () => {
+    const currentTheme = EStyleSheet.value('$theme');
+    const nextTheme = currentTheme === 'light' ? 'dark' : 'light';
+    changeTheme(nextTheme);
+
+    //Need refresh all yours screens
+    onRefreshApp();
+  };
+
+  return !loading ? (
+    <SafeAreaView style={[styles.containerStyle]}>
       <Button title="Change Theme" onPress={onChangeTheme} />
     </SafeAreaView>
   ) : (

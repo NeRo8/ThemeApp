@@ -2,7 +2,7 @@ import light from './modes/light';
 import dark from './modes/dark';
 import EStyleSheet from 'react-native-extended-stylesheet';
 
-export const initBuild = () => {
+export const initThemes = () => {
   EStyleSheet.build(light);
 };
 
